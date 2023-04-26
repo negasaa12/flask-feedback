@@ -2,8 +2,11 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
+
+bcrypt = Bcrypt()
 
 
 def connect_db(app):
@@ -18,20 +21,48 @@ def connect_db(app):
 
 
 class User(db.Model):
+    """Site user."""
 
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
+    username = db.Column(
+        db.String(20),
+        nullable=False,
+        unique=True,
+        primary_key=True,
+    )
+    password = db.Column(db.Text, nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
 
-    username = db.Column(db.String(length=20),
-                         primary_key=True, unique=True, nullable=False)
+    @classmethod
+    def register(cls, username, password, first_name, last_name, email):
+        """Register a user, hashing their password."""
 
-    password = db.Column(db.String(length=50), nullable=False)
+        hashed = bcrypt.generate_password_hash(password)
+        hashed_utf8 = hashed.decode("utf8")
+        user = cls(
+            username=username,
+            password=hashed_utf8,
+            first_name=first_name,
+            last_name=last_name,
+            email=email
+        )
 
-    email = db.Column(db.String(length=50), unique=True, nullable=False)
+        db.session.add(user)
+        return user
 
-    first_name = db.Column(db.String(length=30), nullable=False)
+    @classmethod
+    def authenticate(cls, username, password):
+        """Validate that user exists & password is correct.
 
-    last_name = db.Column(db.String(length=30),  nullable=False)
+        Return user if valid; else return False.
+        """
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+        else:
+            return False
