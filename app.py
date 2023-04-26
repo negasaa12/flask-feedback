@@ -50,7 +50,7 @@ def register():
 
 
 @app.route('/login', methods=["POST", "GET"])
-def login_user():
+def login():
 
     form = LoginForm()
 
@@ -61,12 +61,10 @@ def login_user():
 
         user = User.authenticate(username, password)
         if user:
-            return redirect('/secrets')
-        else:
-            return render_template('login.html', form=form)
 
-    # if form not submitted or is invalid, render login template with form
-    return render_template('login.html', form=form)
+            return redirect('/secrets')
+    else:
+        return render_template('login.html', form=form)
 
 
 @app.route('/secrets')

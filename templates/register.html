@@ -6,10 +6,10 @@
 
 
 <h1> Register</h1>
-<p class="lead"> Register For Our App</p>
 
 
- 
+
+
 <div class="input-group mb-4">
     <form method="POST">
         {{ form.hidden_tag() }}
@@ -19,9 +19,6 @@
             <div class="form-group">
                 {{field.label}}
                 {{field(class_="form-control")}}
-                {% for error in field.errors %}
-                {{error}}
-                {% endfor %}
             </div>
         {% endfor %}
         <button type="submit" class="btn btn-success">Submit</button>
