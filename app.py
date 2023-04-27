@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, request, redirect, render_template, flash
+from flask import Flask, request, redirect, render_template, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
 from sqlalchemy import text
@@ -29,10 +29,11 @@ def home():
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
-
+    """Register a New User"""
     form = RegisterForm()
 
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit():
+        # Handle form submission
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
@@ -44,13 +45,17 @@ def register():
 
         db.session.commit()
 
+        session['user_id'] = new_user.id
+
         return redirect('/secrets')
     else:
+        # Show the register form
         return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
+    """" Log in user"""
 
     form = LoginForm()
 
@@ -61,13 +66,24 @@ def login():
 
         user = User.authenticate(username, password)
         if user:
-
-            return redirect('/secrets')
+            session['user_id'] = user.id
+            return redirect(f'/users/{user.id}')
     else:
         return render_template('login.html', form=form)
 
 
-@app.route('/secrets')
-def secret():
+@app.route('/logout')
+def logout_user():
+    """Log out User"""
 
-    return "YOU MADE IT"
+    session.pop('user_id')
+    return redirect('/')
+
+
+@app.route('/users/<int:id>')
+def user_info(id):
+    if "user_id" not in session:
+        return redirect('/')
+
+    user = User.query.filter_by(id=id).first_or_404()
+    return render_template('users_info.html', user=user)

@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
+from sqlalchemy import ForeignKey, text
 from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
@@ -25,12 +25,9 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    username = db.Column(
-        db.String(20),
-        nullable=False,
-        unique=True,
-        primary_key=True,
-    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
     email = db.Column(db.String(50), nullable=False)
     first_name = db.Column(db.String(30), nullable=False)
@@ -66,3 +63,13 @@ class User(db.Model):
             return user
         else:
             return False
+
+
+class Feedback(db.Model):
+
+    __tablename__ = 'feedbacks'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
