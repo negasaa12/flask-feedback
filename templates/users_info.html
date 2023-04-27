@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>{{user.first_name}} {{user.last_name}} Info</h1>
+<h1> Welcome Back, {{user.first_name}} {{user.last_name}} </h1>
 
 
 
@@ -13,5 +13,18 @@
 <div> Username : {{user.username}}</div>
 <div> Email : {{user.email}}</div>
 
+<h2> Feedbacks</h2>
+
+
+
+
+    {% for feedback in feedbacks %}
+    
+    <div> {{feedback.title}}</div>
+    <div> {{feedback.content}}</div>
+    {% endfor %}
+
+
+<a href="/users/{{user.id}}/feedback/add"> Add Feedback</a>
 
 {% endblock %}

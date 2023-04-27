@@ -1,10 +1,10 @@
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Feedback
 from sqlalchemy import text
 from unittest import TestCase
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, FeedbackForm
 from flask_bcrypt import Bcrypt
 
 
@@ -47,7 +47,7 @@ def register():
 
         session['user_id'] = new_user.id
 
-        return redirect('/secrets')
+        return redirect(f'/users/{new_user.id}')
     else:
         # Show the register form
         return render_template('register.html', form=form)
@@ -82,8 +82,33 @@ def logout_user():
 
 @app.route('/users/<int:id>')
 def user_info(id):
+    """show a specific users information"""
     if "user_id" not in session:
         return redirect('/')
 
     user = User.query.filter_by(id=id).first_or_404()
-    return render_template('users_info.html', user=user)
+
+    feedbacks = Feedback.query.filter_by(user_id=id).all()
+
+    return render_template('users_info.html', user=user, feedbacks=feedbacks)
+
+
+@app.route('/users/<int:id>/feedback/add', methods=["POST", "GET"])
+def add_feedback(id):
+    if "user_id" not in session:
+        return redirect('/')
+
+    form = FeedbackForm()
+
+    if form.validate_on_submit():
+
+        title = form.title.data
+        content = form.content.data
+
+        new_post = Feedback(title=title, content=content, user_id=id)
+        db.session.add(new_post)
+        db.session.commit()
+
+        return redirect(f'/users/{new_post.user_id}')
+    else:
+        return render_template('feedback_form.html', form=form)
