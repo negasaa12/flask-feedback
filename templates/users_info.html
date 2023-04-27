@@ -20,8 +20,9 @@
 
     {% for feedback in feedbacks %}
     
-    <div> {{feedback.title}}</div>
-    <div> {{feedback.content}}</div>
+    <div> <b>{{feedback.title}}</b></div>
+    <div> {{feedback.content}}</div> 
+    <a href="/feedback/{{feedback.id}}/update">Edit</a>
     {% endfor %}
 
 

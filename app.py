@@ -112,3 +112,26 @@ def add_feedback(id):
         return redirect(f'/users/{new_post.user_id}')
     else:
         return render_template('feedback_form.html', form=form)
+
+
+@app.route('/feedback/<int:feedback_id>/update', methods=["POST", "GET"])
+def update_feedback(feedback_id):
+
+    feedback = Feedback.query.filter_by(id=feedback_id).first_or_404()
+
+    if "user_id" not in session:
+        return redirect('/')
+
+    form = FeedbackForm()
+
+    if form.validate_on_submit():
+        feedback.title = form.title.data
+        feedback.content = form.content.data
+
+        db.session.commit()
+
+        return redirect(f"/users/{feedback.user_id}")
+
+    else:
+
+        return render_template('update_form.html', feedback=feedback, form=form)
