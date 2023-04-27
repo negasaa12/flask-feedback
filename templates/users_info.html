@@ -4,28 +4,37 @@
 
 {% block content %}
 
-<h1> Welcome Back, {{user.first_name}} {{user.last_name}} </h1>
+<h1 class="mb-4 mt-3 display-3"> Welcome Back, {{user.first_name}} {{user.last_name}} </h1>
 
 
 
-<div> First Name : {{user.first_name}}</div>
-<div> Last Name: {{user.last_name}}</div>
-<div> Username : {{user.username}}</div>
-<div> Email : {{user.email}}</div>
-
-<h2> Feedbacks</h2>
-
+<p> Personal Information:</p>
+<div class="font-weight-bold" > First Name : {{user.first_name}}</div>
+<div class="font-weight-bold"> Last Name: {{user.last_name}}</div>
+<div class="font-weight-bold"> Username : {{user.username}}</div>
+<div class="font-weight-bold"> Email : {{user.email}}</div>
 
 
 
-    {% for feedback in feedbacks %}
+<div class="ml-3">
+<h2 class=" display-4 mt-5 mb-4"> Feedbacks</h2>
+
+
+
+{% for feedback in feedbacks %}
+  {% if feedback.title %}
+    <div class="card" style="width: 18rem;" >
+      <div class="card-body">
+        <h5 class="card-title">{{feedback.title}}</h5>
+        <p class="card-text">{{feedback.content}}</p>
+        <a href="/feedback/{{feedback.id}}/update" class="btn-sm btn-success">Edit</a>
+      </div>
+    </div>
     
-    <div> <b>{{feedback.title}}</b></div>
-    <div> {{feedback.content}}</div> 
-    <a href="/feedback/{{feedback.id}}/update">Edit</a>
-    {% endfor %}
+  {% endif %}
+{% endfor %}
 
-
-<a href="/users/{{user.id}}/feedback/add"> Add Feedback</a>
-
+<form  class="mt-5"action="/users/{{user.id}}/feedback/add">
+ <button class="btn-primary">Add Feedback </button>
+</form></div>
 {% endblock %}
