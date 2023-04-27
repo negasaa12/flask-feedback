@@ -8,16 +8,23 @@
 
 
 
-<p> Personal Information:</p>
-<div class="font-weight-bold" > First Name : {{user.first_name}}</div>
-<div class="font-weight-bold"> Last Name: {{user.last_name}}</div>
+
+
+<div class="container">
+    <p class="display-4"> General Information:</p>
+    <hr>
+    
+<div class="font-weight-bold" > Name: {{user.first_name}} {{user.last_name}}</div>
 <div class="font-weight-bold"> Username : {{user.username}}</div>
 <div class="font-weight-bold"> Email : {{user.email}}</div>
+<hr>
+</div>
+ 
 
 
 
-<div class="ml-3">
-<h2 class=" display-4 mt-5 mb-4"> Feedbacks</h2>
+<div class=" container ml-3">
+<h2 class=" display-4 "> Feedbacks</h2>
 
 
 
@@ -36,5 +43,6 @@
 
 <form  class="mt-5"action="/users/{{user.id}}/feedback/add">
  <button class="btn-primary">Add Feedback </button>
-</form></div>
+</form>
+</div>
 {% endblock %}

@@ -24,7 +24,7 @@ connect_db(app)
 @app.route('/')
 def home():
 
-    return redirect('/register')
+    return redirect('/login')
 
 
 @app.route('/register', methods=["POST", "GET"])
@@ -98,6 +98,7 @@ def add_feedback(id):
     if "user_id" not in session:
         return redirect('/')
 
+    user = User.query.filter_by(id=id).first_or_404()
     form = FeedbackForm()
 
     if form.validate_on_submit():
@@ -111,7 +112,7 @@ def add_feedback(id):
 
         return redirect(f'/users/{new_post.user_id}')
     else:
-        return render_template('feedback_form.html', form=form)
+        return render_template('feedback_form.html', form=form, user=user)
 
 
 @app.route('/feedback/<int:feedback_id>/update', methods=["POST", "GET"])
