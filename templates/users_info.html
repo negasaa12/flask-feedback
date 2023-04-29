@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1 class="mb-4 mt-3 display-3"> Welcome Back, {{user.first_name}} {{user.last_name}} </h1>
+<h1 class="mb-4 mt-3 display-4"> Welcome Back, {{user.first_name}} {{user.last_name}} </h1>
 
 
 
@@ -33,6 +33,7 @@
     <div class="card" style="width: 18rem;" >
       <div class="card-body">
         <h5 class="card-title">{{feedback.title}}</h5>
+        <hr>
         <p class="card-text">{{feedback.content}}</p>
         <a href="/feedback/{{feedback.id}}/update" class="btn-sm btn-success">Edit</a>
       </div>
